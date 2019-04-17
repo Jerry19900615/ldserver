@@ -161,9 +161,10 @@
             }
 
 			function getAndroidDownloadLink(){
-				$.get("/app/info", function(data, status){
-                    if (data.Status === "success"){
-                        $("#android-dlink").attr("href","http://cdn.poersmart.com/files/"+ data.name)
+				$.get("/cgi/appinfo", function(data, status){
+                    //console.log(data)
+                    if (data.status === "success"){
+                        $("#android-dlink").attr("href","/files/"+ data.name)
                     } else {
                         $('#dlg1').dialog('open').dialog('center')
                     }

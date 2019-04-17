@@ -3,9 +3,9 @@ package main
 import (
 	"io/ioutil"
 	"log"
-	"net/http"
+	"net"
+	"net/http/fcgi"
 	"os"
-	"path"
 	"regexp"
 
 	"github.com/emicklei/go-restful"
@@ -13,31 +13,15 @@ import (
 
 type AppInfo struct {
 	Name   string `json:"name"`
-	Status string `json: status`
+	Status string `json:"status"`
 }
 
 func getFilesDir() string {
 	dir := os.Getenv("POER_CDN_FILE_PATH")
 	if dir == "" {
-		dir = "/home/html/files"
+		dir = "./files"
 	}
 	return dir
-}
-
-func main() {
-	ws := new(restful.WebService)
-	ws.Path("/app")
-	ws.Consumes(restful.MIME_JSON).
-		Produces(restful.MIME_JSON)
-	ws.Route(ws.GET("/info").To(getAppInfo).Writes(AppInfo{}))
-	restful.Add(ws)
-
-	ws = new(restful.WebService)
-	ws.Path("/")
-	ws.Route(ws.GET("/{subpath:*}").To(serveStaticFiles))
-	restful.Add(ws)
-	log.Println("start server on http://localhost:9140")
-	http.ListenAndServe(":9140", nil)
 }
 
 func getAppInfo(req *restful.Request, rsp *restful.Response) {
@@ -74,16 +58,27 @@ func getAppInfo(req *restful.Request, rsp *restful.Response) {
 			info.Status = "success"
 			rsp.WriteEntity(info)
 			return
+		} else {
+			//log.Println(f.Name(), regStr)
 		}
 	}
+	log.Println("file not found")
 	rsp.WriteEntity(info)
 }
 
-func serveStaticFiles(req *restful.Request, rsp *restful.Response) {
-	actual := path.Join("./", req.PathParameter("subpath"))
-	http.ServeFile(
-		rsp.ResponseWriter,
-		req.Request,
-		actual,
-	)
+func main() {
+
+	ws := new(restful.WebService)
+	ws.Path("/cgi").
+		Produces(restful.MIME_JSON).
+		Consumes(restful.MIME_JSON)
+	ws.Route(ws.GET("/appinfo").To(getAppInfo).Writes(AppInfo{}))
+	restful.Add(ws)
+
+	listener, err := net.Listen("tcp", "127.0.0.1:9142")
+	if err != nil {
+		panic(err)
+	}
+	//fcgi.Serve(listener, srv)
+	fcgi.Serve(listener, restful.DefaultContainer)
 }
