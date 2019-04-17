@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>PoerSmart Controls</title>
+        <link rel="stylesheet" type="text/css" href="http://cdn.poersmart.com/js/themes/default/easyui.css">
+        <link rel="stylesheet" type="text/css" href="http://cdn.poersmart.com/js/themes/mobile.css">
+        <link rel="stylesheet" type="text/css" href="http://cdn.poersmart.com/js/themes/icon.css">
+        <script type="text/javascript" src="http://cdn.poersmart.com/js/jquery.min.js"></script>
+        <script type="text/javascript" src="http://cdn.poersmart.com/js/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="http://cdn.poersmart.com/js/jquery.easyui.mobile.js"></script>
+        <style type="text/css">
+
+        a{
+            text-decoration:none;
+            color:#ffffff;
+        }
+        .icon-row {
+            margin: auto;
+            display: table;
+        }
+        .icon-row div {
+            float: left;
+            margin: 0 10px;
+        }
+        .app-btn{
+            display:block;
+            width:90px;
+            height: 100px;
+            text-align:center;
+            color:#ffffff;
+            padding:10px;
+            font-size: large;
+        }
+        .green-btn{
+            background-color:rgb(0,177,106);
+        }
+
+        .orange-btn{
+                background-color:rgb(247,148,30);
+        }
+        .app-logo {
+            width: 100px;
+            height: 100px;
+            display: block;
+            margin: 30px auto;
+        }
+
+        .title{
+            text-align:center;
+            margin-top:15px;
+        }
+
+        .title h1{
+                font-size:25px;
+                font-weight:500;
+                color:#999;
+        }
+
+        #main{
+            display:none;
+        }
+        #weixin{
+            display:none;
+        }
+        .weixin-0{
+            color:#555;
+            padding:10px;
+        }
+        .weixin-arrow{
+            position:absolute;
+            right:30px;
+            top:10px;
+        }
+        .weixin-1{
+            font-size:1.5em;
+            position:absolute;
+            left:30px;
+            top: 60px;
+        }
+        .weixin-2{
+            margin-top:20px;
+            font-size:1.5em;
+            position:absolute;
+            left:30px;
+            top:74px;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="easyui-navpanel">
+            <div id="main">
+                <div class="container app-logo">
+                    <img src="http://cdn.poersmart.com/images/app-logo.png" style="margin:0;width:100%;height:100%;">
+                </div>
+                <div class="title">
+                    <h1>Download App</h1>
+                </div>
+                <div class="icon-row">
+                    <div><a id = "android-dlink" href="" class="app-btn green-btn"><img src="http://cdn.poersmart.com/images/android_icon.png"><br>Android</a></div>
+                    <div><a href="javascript:void(0);" onclick="javascript:iosInstall();" class="app-btn orange-btn"><img src="./images/ios_icon.png"><br>Apple</a></div>
+                </div>
+            </div>
+            <div id='weixin'>
+                <div class="weixin-0">请按提示操作</div>
+                <div class="weixin-arrow"><img src="http://cdn.poersmart.com/images/weixin-arrow.png" /></div>
+                <div class="weixin-1">1. 点击</div>
+                <div id="step2" class="weixin-2">2. 在Safari中打开</div>
+            </div>
+            <footer style="padding:2px 3px; text-align: center;">
+                <span>&copy;2019 www.poersmart.com All Rights Reserved.</span>
+            </footer>
+
+            <div id="dlg1" class="easyui-dialog" style="padding:20px 6px;width:80%;" data-options="inline:true,modal:true,closed:true,title:'Information'">
+                <p>No Android App File On Server</p>
+                <div class="dialog-button">
+                    <a href="javascript:void(0)" class="easyui-linkbutton" style="width:100%;height:35px" onclick="$('#dlg1').dialog('close')">OK</a>
+                </div>
+            </div>
+
+        </div>
+        <script type="text/javascript">
+
+        
+
+        $(document).ready(function(){
+
+
+            function versions(){
+                var u = navigator.userAgent, app = navigator.appVersion;
+                return {
+                    trident: u.indexOf('Trident') > -1,
+                    presto: u.indexOf('Presto') > -1,
+                    webKit: u.indexOf('AppleWebKit') > -1,
+                    gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1,
+                    mobile: !!u.match(/AppleWebKit.*Mobile.*/),
+                    ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/),
+                    android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1,
+                    iPhone: u.indexOf('iPhone') > -1 ,
+                    iPad: u.indexOf('iPad') > -1,
+                    webApp: u.indexOf('Safari') == -1
+                };
+            }
+
+            function is_weixin(){  
+                var ua = navigator.userAgent.toLowerCase();  
+                if(ua.match(/MicroMessenger/i)=="micromessenger") {  
+                    return true;  
+                } else {  
+                    return false;  
+                }  
+            }
+            function iosInstall(){
+                if(!browser.versions.mobile){
+                    alert("请使用手机访问该网页");
+                    return;
+                }
+                //url = "http://www.pgyer.com/app/install/bb3bd0353df6c3d3e39dc08523fd4e9e";
+                //window.location.href = url;
+            }
+
+			function getAndroidDownloadLink(){
+				$.get("/app/info", function(data, status){
+                    if (data.Status === "success"){
+                        $("#android-dlink").attr("href","http://cdn.poersmart.com/files/"+ data.name)
+                    } else {
+                        $('#dlg1').dialog('open').dialog('center')
+                    }
+					
+				});
+			}
+
+            var browser={
+                versions:versions(),
+                language:(navigator.browserLanguage || navigator.language).toLowerCase()
+            };
+
+            function init(){
+                if(browser.versions.ios || browser.versions.iPhone || browser.versions.iPad){
+                    document.getElementById("main").style.display="block";return;
+                }
+                if(is_weixin()){
+                    document.getElementById("weixin").style.display="block";
+                    if(browser.versions.ios || browser.versions.iPhone || browser.versions.iPad){
+                        document.getElementById("step2").innerHTML="2. 在Safari中打开";
+                    }else{
+                        document.getElementById("step2").innerHTML="2. 在浏览器中打开";
+                    }
+                }else{
+                    document.getElementById("main").style.display="block";
+                }
+
+				getAndroidDownloadLink()
+            }
+            init();
+        });
+        </script>
+    </body>
+</html>
