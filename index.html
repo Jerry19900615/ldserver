@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>PoerSmart Controls</title>
+        <link rel="stylesheet" type="text/css" href="http://cdn.poersmart.com/js/themes/default/easyui.css">
+        <link rel="stylesheet" type="text/css" href="http://cdn.poersmart.com/js/themes/mobile.css">
+        <link rel="stylesheet" type="text/css" href="http://cdn.poersmart.com/js/themes/icon.css">
+        <script type="text/javascript" src="http://cdn.poersmart.com/js/jquery.min.js"></script>
+        <script type="text/javascript" src="http://cdn.poersmart.com/js/jquery.easyui.min.js"></script>
+        
+    </head>
+    <body>
+        <div class="easyui-layout"  data-options="fit:'true'">
+            <div data-options="region:'north'" style="height:80px;">
+                <h1>PoerSmart 管理</h1>
+            </div>
+            <!--<div data-options="region:'east'" title="East" style="width:100px;"></div>-->
+            <div data-options="region:'west'" style="width:200px;">
+                    <div id="side-menu" style="width:100%; height: 100%;">
+                    </div>
+            </div>
+            <div data-options="region:'center'">
+                    <div id="tt" class="easyui-tabs" data-options="fit:'true',border:'false'">
+                        <div title="欢迎" style="padding:20px;display:none;">
+                            tab1
+                        </div>
+                    </div>
+            </div>
+            <div data-options="region:'south'" style="height:24px; text-align: center;">
+                &copy;2019 www.poersmart.com All Rights Reserved.
+            </div>
+        </div>
+
+        <script type="text/javascript">
+        var data = [{
+            text: '基本功能',
+            state: 'open',
+            children: [{
+                text: '升级包管理'
+            },{
+                text: '网关'
+            },{
+                text: '温控器'
+            }]
+        },{
+            text: '系统管理',
+            iconCls: 'icon-more',
+            children: [{
+                text: 'Option4'
+            },{
+                text: 'Option5'
+            },{
+                text: 'Option6'
+            }]
+        }];
+
+        function onSideMenuSelected(item){
+            //console.log(item)
+            switch(item.text){
+                case "升级包管理":
+                    addTab(item.text, "")
+                break;
+                case "网关":
+                    addTab(item.text, "")
+                break;
+                case "温控器":
+                    addTab(item.text, "")
+                break;
+            }
+        }
+
+        function addTab(title, url){
+            if ($("#tt").tabs("exists", title) === true){
+                $("#tt").tabs("select", title);
+                return
+            }
+            $("#tt").tabs("add", {
+                title: title,
+                url: url,
+                closable: true,
+            });
+        }
+
+
+        $(document).ready(function(){
+            $("#side-menu").sidemenu({
+                data: data,
+                onSelect: onSideMenuSelected,
+            });
+        });
+        </script>
+    </body>
+</html>

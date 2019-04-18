@@ -11,6 +11,7 @@ import (
 	"github.com/emicklei/go-restful"
 )
 
+//AppInfo ...
 type AppInfo struct {
 	Name   string `json:"name"`
 	Status string `json:"status"`
@@ -58,8 +59,6 @@ func getAppInfo(req *restful.Request, rsp *restful.Response) {
 			info.Status = "success"
 			rsp.WriteEntity(info)
 			return
-		} else {
-			//log.Println(f.Name(), regStr)
 		}
 	}
 	log.Println("file not found")
