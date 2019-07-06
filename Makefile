@@ -3,7 +3,7 @@ GOBIN=$(shell pwd)/bin
 export GOBIN
 
 PACK_DIR := dlserver
-VER:=v1.0
+VER:=v1.1.0
 
 
 .PHONY: all
@@ -15,6 +15,6 @@ package:
 	cp ./bin/srv $(PACK_DIR)/dlserver
 	cp -af ./images $(PACK_DIR)/ 
 	cp -af ./js $(PACK_DIR)/
-	cp -af app.html $(PACK_DIR)/
+	cp -af ./src/webroot/app.html $(PACK_DIR)/
 	tar czvf dlserver-$(VER).tar.gz $(PACK_DIR)
 	rm $(PACK_DIR) -rf
